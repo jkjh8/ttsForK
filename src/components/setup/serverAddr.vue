@@ -42,7 +42,7 @@ onMounted(async () => {
     <div class="text-bold sans-font q-mt-sm">Server Address</div>
     <q-input
       v-model="current"
-      style="width: 35%; min-width: 200px"
+      style="width: 50%; min-width: 300px"
       outlined
       dense
       :rules="[required]"
