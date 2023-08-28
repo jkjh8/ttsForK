@@ -1,29 +1,44 @@
 import { app, BrowserWindow, nativeTheme } from 'electron'
 import path from 'path'
 import os from 'os'
+import db from './db'
+
+import { connectSocket } from './api/server'
 
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform()
 
 try {
   if (platform === 'win32' && nativeTheme.shouldUseDarkColors === true) {
-    require('fs').unlinkSync(path.join(app.getPath('userData'), 'DevTools Extensions'))
+    require('fs').unlinkSync(
+      path.join(app.getPath('userData'), 'DevTools Extensions')
+    )
   }
-} catch (_) { }
+} catch (_) {}
+
+// import ipc functions
+import('./ipc')
 
 let mainWindow
 
-function createWindow () {
+async function createWindow() {
   /**
    * Initial window options
    */
+
+  const size = await db.findOne({ key: 'windowSize' })
+  const position = await db.findOne({ key: 'windowPosition' })
+
   mainWindow = new BrowserWindow({
     icon: path.resolve(__dirname, 'icons/icon.png'), // tray icon
-    width: 1000,
-    height: 600,
+    width: size && size.width ? size.width : 800,
+    height: size && size.height ? size.height : 600,
+    x: position && position.x ? position.x : 100,
+    y: position && position.y ? position.y : 50,
     useContentSize: true,
     webPreferences: {
       contextIsolation: true,
+      sandbox: false,
       // More info: https://v2.quasar.dev/quasar-cli-webpack/developing-electron-apps/electron-preload-script
       preload: path.resolve(__dirname, process.env.QUASAR_ELECTRON_PRELOAD)
     }
@@ -43,6 +58,21 @@ function createWindow () {
 
   mainWindow.on('closed', () => {
     mainWindow = null
+  })
+  mainWindow.on('move', async () => {
+    const position = mainWindow.getPosition()
+    await db.update(
+      {
+        key: 'windowPosition'
+      },
+      {
+        $set: {
+          x: position[0],
+          y: position[1]
+        }
+      },
+      { upsert: true }
+    )
   })
 }
 
