@@ -217,6 +217,10 @@ module.exports = configure(function (ctx) {
             filter: ["**/*"],
           },
         ],
+        nsis: {
+          oneClick: false,
+          allowToChangeInstallationDirectory: true,
+        },
       },
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
