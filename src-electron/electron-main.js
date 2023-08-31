@@ -3,7 +3,7 @@ import path from 'path'
 import os from 'os'
 import db from './db'
 
-import { connectSocket } from './api/server'
+import { getTTSInfo } from './api/tts'
 
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform()
@@ -25,6 +25,8 @@ async function createWindow() {
   /**
    * Initial window options
    */
+
+  getTTSInfo()
 
   const size = await db.findOne({ key: 'windowSize' })
   const position = await db.findOne({ key: 'windowPosition' })

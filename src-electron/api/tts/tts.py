@@ -1,4 +1,7 @@
-import sys, json, pyttsx3
+import sys
+import json
+import pyttsx3
+
 
 def make_file(command):
     try:
@@ -18,13 +21,15 @@ def make_file(command):
 
         # create audio file
         engine.save_to_file(text, mp3filename)
-        print(json.dumps({"error": None, "file": mp3filename, "type": "audio", "rate": rate}))
+        print(json.dumps({"error": None, "file": mp3filename,
+              "type": "audio", "rate": rate}))
 
         # end process
         sys.exit()
     except Exception as e:
         print(json.dumps({"error": e}))
         sys.exit()
+
 
 def get_info():
     try:
@@ -33,7 +38,9 @@ def get_info():
         # get engine properties
         voices = engine.getProperty('voices')
         rate = engine.getProperty('rate')
-        print(json.dumps({ "error": None, "voices": voices, "rate": rate}, default=lambda x: x.__dict__))
+        pythonPath = sys.executable
+        print(json.dumps({"error": None, "voices": voices,
+              "rate": rate, "pythonPath": pythonPath}, default=lambda x: x.__dict__))
 
         # end process
         sys.exit()
@@ -41,7 +48,8 @@ def get_info():
         print(json.dumps({"error": e}))
         sys.exit()
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     command = sys.argv
     if command[1] == "make_file":
         command.pop()
