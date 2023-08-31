@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 // components
 import ServerAddress from '/src/components/setup/serverAddr'
 import ServerUuid from '/src/components/setup/serverUuid'
+import FolderPath from '/src/components/setup/folderPath'
 // variables
 const serverAddress = ref('http://localhost')
 
@@ -15,6 +16,7 @@ onMounted(() => {})
     <div class="setup-card q-gutter-y-sm">
       <ServerAddress />
       <ServerUuid />
+      <FolderPath />
     </div>
   </div>
 </template>

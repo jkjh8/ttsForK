@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron'
+import { ipcMain, dialog } from 'electron'
 import db from '../../db'
 import { socket, connectSocket } from '/src-electron/api/server'
 import { makeUid } from '/src-electron/api/uid'
@@ -7,6 +7,9 @@ ipcMain.handle('onPromise', async (e, args) => {
   let rt = null
 
   switch (args.command) {
+    case 'getDataFromDb':
+      rt = await db.findOne({ key: args.value })
+      break
     case 'getServerAddress':
       rt = await db.findOne({ key: 'serveraddress' })
       break
@@ -47,6 +50,19 @@ ipcMain.handle('onPromise', async (e, args) => {
       )
       rt = args.value
       connectSocket()
+      break
+    case 'selectFolder':
+      const folders = dialog.showOpenDialogSync({
+        title: 'Select a folder',
+        properties: ['openDirectory']
+      })
+      console.log(folders)
+      await db.update(
+        { key: 'folder' },
+        { $set: { value: folders[0] } },
+        { upsert: true }
+      )
+      rt = folders[0]
       break
     default:
       console.log('not defined command ' + args.command)
