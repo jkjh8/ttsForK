@@ -1,9 +1,14 @@
-import { app, BrowserWindow, nativeTheme } from 'electron'
+import { app, session, BrowserWindow, nativeTheme } from 'electron'
 import path from 'path'
 import os from 'os'
 import db from './db'
 
 import { getTTSInfo } from './api/tts'
+
+const vueDevToolPath = path.join(
+  os.homedir(),
+  'AppData/Local/Google/Chrome/User Data/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/6.5.0_0'
+)
 
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform()
@@ -78,7 +83,12 @@ async function createWindow() {
   })
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(async () => {
+  if (platform !== 'darwin') {
+    await session.defaultSession.loadExtension(vueDevToolPath)
+  }
+  createWindow()
+})
 
 app.on('window-all-closed', () => {
   if (platform !== 'darwin') {
