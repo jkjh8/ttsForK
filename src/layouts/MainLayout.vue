@@ -8,9 +8,11 @@ import ToolbarLinks from 'src/components/layouts/toolbarLinks'
 // stores
 import { useOnlineStore } from 'src/stores/online'
 import { useUidStore } from 'src/stores/uid'
+import { useTTSstore } from 'src/stores/tts'
 
 const { updateOnline } = useOnlineStore()
 const { updateUid } = useUidStore()
+const { voices, voice, rate } = storeToRefs(useTTSstore())
 // computed
 // Variables
 // Functions
@@ -32,6 +34,11 @@ onMounted(() => {
       case 'updateUid':
         updateUid(args.value)
         break
+      case 'tts':
+        console.log(args)
+        voices.value = args.value.voices
+        rate.value = args.value.rate
+        voice.value = args.value.voice
       default:
         console.log(args)
         break

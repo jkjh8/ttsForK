@@ -37,15 +37,16 @@ def get_info():
 
         # get engine properties
         voices = engine.getProperty('voices')
+        voice = engine.getProperty('voice')
         rate = engine.getProperty('rate')
         pythonPath = sys.executable
-        print(json.dumps({"error": None, "voices": voices,
+        print(json.dumps({"error": None, "voices": voices, "voice": voice,
               "rate": rate, "pythonPath": pythonPath}, default=lambda x: x.__dict__))
 
         # end process
         sys.exit()
     except Exception as e:
-        print(json.dumps({"error": e}))
+        print(json.dumps(e))
         sys.exit()
 
 
