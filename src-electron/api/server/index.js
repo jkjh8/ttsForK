@@ -1,39 +1,15 @@
 import { BrowserWindow as bw } from 'electron'
 import { io } from 'socket.io-client'
-import db from '/src-electron/db'
 import logger from '/src-electron/logger'
-
-import { makeUid } from '/src-electron/api/uid'
+import { getAddress } from '../address'
+import { getUid } from '../uid'
 
 let socket
 
-async function checkServerAddress() {
-  const r = await db.findOne({ key: 'serveraddress' })
-  if (r) {
-    return r.value
-  } else {
-    await db.update(
-      { key: 'serveraddress' },
-      { $se: { value: 'http://localhost' } },
-      { upset: true }
-    )
-    return 'http://localhost'
-  }
-}
-
-async function checkUid() {
-  const r = await db.findOne({ key: 'uid' })
-  if (r) {
-    return r.value
-  } else {
-    return await makeUid()
-  }
-}
-
 async function connectSocket() {
   try {
-    const addr = await checkServerAddress()
-    const uid = await checkUid()
+    const addr = await getAddress()
+    const uid = await getUid()
 
     socket = io(`${addr}/device`, {
       transports: ['websocket'],
@@ -64,4 +40,4 @@ async function connectSocket() {
   }
 }
 
-export { socket, checkServerAddress, connectSocket }
+export { socket, connectSocket }

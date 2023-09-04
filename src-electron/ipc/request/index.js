@@ -4,13 +4,13 @@ import { getTTSInfo } from '/src-electron/api/tts'
 
 ipcMain.on('onRequest', async (e, args) => {
   switch (args.command) {
-    case 'connect':
-      try {
-        connectSocket()
-      } catch (error) {
-        console.error('connect', error)
-      }
-      break
+    // case 'connect':
+    //   try {
+    //     connectSocket()
+    //   } catch (error) {
+    //     console.error('connect', error)
+    //   }
+    //   break
     case 'refreshTts':
       getTTSInfo()
       break

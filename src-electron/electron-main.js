@@ -3,8 +3,10 @@ import path from 'path'
 import os from 'os'
 import db from './db'
 
+import { connectSocket } from './api/server/index'
+import { getMediaFolder } from './api/folder'
 import { getTTSInfo } from './api/tts'
-
+import { setLocalFileProtocol } from './api/files'
 const vueDevToolPath = path.join(
   os.homedir(),
   'AppData/Local/Google/Chrome/User Data/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/6.5.0_0'
@@ -27,12 +29,13 @@ import('./ipc')
 let mainWindow
 
 async function createWindow() {
-  /**
-   * Initial window options
-   */
-
+  // socket connect
+  connectSocket()
+  // get media folder
+  await getMediaFolder()
+  // get tts information
   getTTSInfo()
-
+  // init size, position
   const size = await db.findOne({ key: 'windowSize' })
   const position = await db.findOne({ key: 'windowPosition' })
 
@@ -56,7 +59,6 @@ async function createWindow() {
   if (process.env.DEBUGGING) {
     // if on DEV or Production with debug enabled
     mainWindow.webContents.openDevTools()
-    console.log('open dev tools')
   } else {
     // we're on production; no access to devtools pls
     mainWindow.webContents.on('devtools-opened', () => {
@@ -64,9 +66,12 @@ async function createWindow() {
     })
   }
 
+  setLocalFileProtocol()
+
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
   mainWindow.on('move', async () => {
     const position = mainWindow.getPosition()
     await db.update(
@@ -86,7 +91,7 @@ async function createWindow() {
 
 app.whenReady().then(async () => {
   if (platform !== 'darwin') {
-    await session.defaultSession.loadExtension(vueDevToolPath)
+    // await session.defaultSession.loadExtension(vueDevToolPath)
   }
   createWindow()
 })
