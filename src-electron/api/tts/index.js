@@ -1,45 +1,34 @@
 import path from 'path'
 import os from 'os'
-import { BrowserWindow as bw } from 'electron'
-import { PythonShell } from 'python-shell'
-import { v4 as uuidv4 } from 'uuid'
-import logger from '/src-electron/logger'
+import { Worker } from 'worker_threads'
 
 const platform = process.platform || os.platform()
 
-let pythonPath
+let ttsInfo
 
-if (process.env.NODE_ENV === 'production') {
-}
+let pythonPath = path.resolve(
+  process.env.NODE_ENV === 'production' ? process.resourcesPath : '',
+  'venv',
+  platform === 'win32' ? 'Scripts' : 'bin',
+  'python'
+)
 
-if (platform === 'win32') {
-  if (process.env.NODE_ENV === 'production') {
-    pythonPath = path.resolve(process.resourcesPath, 'venv/Scripts/python.exe')
-  } else {
-    pythonPath = path.resolve(__dirname, '../../../venv/Scripts/python.exe')
-  }
-} else {
-  pythonPath = path.resolve(__dirname, '../../../venv/bin/python')
-}
-
-function getTTSInfo() {
-  const options = {
-    mode: 'json',
-    pythonPath: pythonPath,
-    pythonOptions: ['-u'],
-    scriptPath: __dirname,
-    args: ['get_info']
-  }
-  PythonShell.run('tts.py', options)
-    .then((result) => {
-      bw.fromId(1).webContents.send('onResponse', {
-        key: 'tts',
-        value: result[0]
-      })
+function ttsGet(args) {
+  return new Promise((resolve, reject) => {
+    const worker = new Worker(path.resolve(__dirname, 'worker.js'), {
+      workerData: { pythonPath, args: args }
     })
-    .catch((err) => {
-      console.log('error', err)
+    worker.on('message', (message) => {
+      ttsInfo = message
+      resolve(message)
     })
+    worker.on('exit', () => {
+      resolve()
+    })
+    worker.on('error', (err) => {
+      reject(err)
+    })
+  })
 }
 
-export { getTTSInfo }
+export { ttsInfo, ttsGet }

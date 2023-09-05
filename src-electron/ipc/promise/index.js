@@ -1,7 +1,9 @@
-import { ipcMain, dialog } from 'electron'
+import { ipcMain } from 'electron'
 import db from '../../db'
-import { socket, connectSocket } from '/src-electron/api/server'
-import { makeUid } from '/src-electron/api/uid'
+import { updateAddress } from '/src-electron/api/address'
+import { getUid, makeUid, updateUid } from '/src-electron/api/uid'
+import { updateMediaFolder } from '/src-electron/api/folder'
+import { ttsInfo, ttsGet } from '/src-electron/api/tts'
 
 ipcMain.handle('onPromise', async (e, args) => {
   let rt = null
@@ -10,59 +12,32 @@ ipcMain.handle('onPromise', async (e, args) => {
     case 'getDataFromDb':
       rt = await db.findOne({ key: args.value })
       break
-    case 'getServerAddress':
-      rt = await db.findOne({ key: 'serveraddress' })
-      break
     case 'updateServerAddress':
-      if (socket.connected) {
-        socket.disconnect()
-      }
-      rt = await db.update(
-        { key: 'serveraddress' },
-        { $set: { value: args.value } },
-        { upsert: true }
-      )
-      await connectSocket()
+      await updateAddress(args.value)
       break
+    // id
     case 'getId':
-      const r = await db.findOne({ key: 'uid' })
-      if (r && r.value) {
-        rt = r.value
-      } else {
-        rt = null
-      }
+      rt = await getUid()
       break
     case 'makeNewUid':
-      if (socket.connected) {
-        socket.disconnect()
-      }
       rt = await makeUid()
-      connectSocket()
       break
     case 'updateId':
-      if (socket.connected) {
-        socket.disconnect()
-      }
-      await db.update(
-        { key: 'uid' },
-        { $set: { value: args.value } },
-        { upsert: true }
-      )
-      rt = args.value
-      connectSocket()
+      rt = await updateUid(args.value)
       break
+    // folder
     case 'selectFolder':
-      const folders = dialog.showOpenDialogSync({
-        title: 'Select a folder',
-        properties: ['openDirectory']
-      })
-      console.log(folders)
-      await db.update(
-        { key: 'folder' },
-        { $set: { value: folders[0] } },
-        { upsert: true }
-      )
-      rt = folders[0]
+      rt = await updateMediaFolder()
+      break
+    case 'ttsGetInfo':
+      if (ttsInfo) {
+        rt = ttsInfo
+      } else {
+        rt = await ttsGet(['get_info'])
+      }
+      break
+    case 'refreshTtsInfo':
+      rt = await ttsGet(['get_info'])
       break
     default:
       console.log('not defined command ' + args.command)

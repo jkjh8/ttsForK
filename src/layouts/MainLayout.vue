@@ -44,7 +44,6 @@ onMounted(() => {
         break
     }
   })
-  API.onRequest({ command: 'connect' })
 })
 </script>
 

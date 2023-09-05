@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
+import { socket, connectSocket } from '/src-electron/api/server'
 import db from '/src-electron/db'
 import logger from '/src-electron/logger'
 
@@ -20,6 +21,9 @@ async function getUid() {
 
 async function makeUid() {
   try {
+    if (socket.connected) {
+      socket.disconnect()
+    }
     const current = uuidv4()
     await db.update(
       { key: 'uid' },
@@ -28,10 +32,24 @@ async function makeUid() {
     )
     uid = current
     logger.info(`make new uid: ${uid}`)
+    connectSocket()
     return uid
   } catch (error) {
     logger.error(`make uid error: ${error}`)
   }
 }
 
-export { uid, getUid, makeUid }
+async function updateUid(uid) {
+  if (socket.connected) {
+    socket.disconnect()
+  }
+  const r = await db.update(
+    { key: 'uid' },
+    { $set: { value: uid } },
+    { upsert: true }
+  )
+  connectSocket()
+  return r
+}
+
+export { uid, getUid, makeUid, updateUid }

@@ -1,4 +1,5 @@
 import db from '/src-electron/db'
+import { socket, connectSocket } from '/src-electron/api/server'
 import logger from '/src-electron/logger'
 
 let address = 'http://127.0.0.1'
@@ -17,11 +18,15 @@ async function getAddress() {
 
 async function updateAddress(value) {
   try {
+    if (socket.connected) {
+      socket.disconnect()
+    }
     const r = await db.update(
       { key: 'serverAddress' },
       { $set: { value: value } },
       { upsert: true }
     )
+    connectSocket()
     if (r) {
       return value
     }

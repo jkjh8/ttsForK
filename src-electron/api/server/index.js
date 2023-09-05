@@ -5,6 +5,10 @@ import { getAddress } from '../address'
 import { getUid } from '../uid'
 
 let socket
+let online = {
+  status: false,
+  id: null
+}
 
 async function connectSocket() {
   try {
@@ -20,17 +24,20 @@ async function connectSocket() {
     })
 
     socket.on('connect', () => {
+      online.status = true
+      online.id = socket.id
       logger.info(`Socket IO Connected ${socket.id}`)
       bw.fromId(1).webContents.send('onResponse', {
         key: 'connect',
-        value: true
+        value: online
       })
     })
 
     socket.on('disconnect', () => {
+      online.status = false
       bw.fromId(1).webContents.send('onResponse', {
         key: 'connect',
-        value: false
+        value: online
       })
     })
 
@@ -40,4 +47,4 @@ async function connectSocket() {
   }
 }
 
-export { socket, connectSocket }
+export { socket, connectSocket, online }

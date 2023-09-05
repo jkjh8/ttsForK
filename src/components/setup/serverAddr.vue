@@ -29,7 +29,11 @@ const updateServerAddress = async () => {
 }
 
 onMounted(async () => {
-  const addr = await API.onPromise({ command: 'getServerAddress' })
+  const addr = await API.onPromise({
+    command: 'getDataFromDb',
+    value: 'address'
+  })
+  console.log(addr)
   if (addr) {
     current.value = addr.value
     serverAddress.value = addr.value

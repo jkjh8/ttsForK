@@ -1,4 +1,4 @@
-import { app } from 'electron'
+import { app, dialog } from 'electron'
 import db from '/src-electron/db'
 import logger from '/src-electron/logger'
 
@@ -19,16 +19,20 @@ async function getMediaFolder() {
   }
 }
 
-async function updateMediaFolder(f) {
+async function updateMediaFolder() {
   try {
+    const folders = dialog.showOpenDialogSync({
+      title: 'Select Media Folder',
+      properties: ['openDirectory']
+    })
     const r = await db.update(
       { key: 'folder' },
-      { $set: { value: f } },
+      { $set: { value: folders[0] } },
       { upsert: true }
     )
     if (r) {
-      mediaFolder = f
-      logger.info(`update media folder ${f}`)
+      mediaFolder = folders[0]
+      logger.info(`update media folder ${folders[0]}`)
     }
     return mediaFolder
   } catch (error) {
