@@ -6,16 +6,14 @@ const current = ref('')
 
 // functions
 async function selectFolder() {
-  const r = await API.onPromise({ command: 'selectFolder' })
-  current.value = r
+  current.value = await API.onPromise({ command: 'selectFolder' })
 }
-
+async function openFinder() {
+  await API.onRequest({ command: 'openFinder', value: current.value })
+}
 // lifecycle hooks
 onMounted(async () => {
-  const r = await API.onPromise({
-    command: 'getFolder'
-  })
-  current.value = r
+  current.value = await API.onPromise({ command: 'getFolder' })
 })
 </script>
 
@@ -28,7 +26,9 @@ onMounted(async () => {
       class="fit row no-wrap justify-end items-center"
       style="max-width: 50%"
     >
-      <div>{{ current }}</div>
+      <div class="cursor-pointer underline" @click="openFinder">
+        {{ current }}
+      </div>
       <q-btn
         round
         flat
@@ -40,4 +40,8 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.underline {
+  text-decoration: underline;
+}
+</style>

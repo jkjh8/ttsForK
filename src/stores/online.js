@@ -2,15 +2,10 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useOnlineStore = defineStore('online', () => {
-  const online = ref(false)
+  const online = ref({ status: false, id: '' })
 
   const updateOnline = (value) => {
-    if (value) {
-      online.value = true
-    } else {
-      online.value = false
-    }
+    online.value = value
   }
-
   return { online, updateOnline }
 })

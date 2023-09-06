@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron'
 import { v4 as uuidv4 } from 'uuid'
 import db from '/src-electron/db'
+import { online } from '/src-electron/api/server'
 import { getAddress, updateAddress } from '/src-electron/api/address'
 import { getUid, makeUid, updateUid } from '/src-electron/api/uid'
 import { getMediaFolder, updateMediaFolder } from '/src-electron/api/folder'
@@ -11,6 +12,9 @@ ipcMain.handle('onPromise', async (e, args) => {
   let rt = null
 
   switch (args.command) {
+    case 'online':
+      rt = online
+      break
     case 'getDataFromDb':
       rt = await db.findOne({ key: args.value })
       break

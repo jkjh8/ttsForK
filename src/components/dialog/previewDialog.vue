@@ -11,21 +11,7 @@ const emit = defineEmits([...useDialogPluginComponent.emits])
 
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
-    <q-card class="q-dialog-plugin border-radius sans-font">
-      <q-card-section class="row no-wrap q-gutter-sm">
-        <audio controls :src="src" />
-      </q-card-section>
-
-      <q-card-actions align="right">
-        <q-btn
-          round
-          flat
-          color="primary"
-          icon="check_circle"
-          @click="onDialogOK"
-        />
-      </q-card-actions>
-    </q-card>
+    <audio controls :src="src" autoplay @ended="onDialogOK" />
   </q-dialog>
 </template>
 
