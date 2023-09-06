@@ -1,7 +1,11 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { useQuasar } from 'quasar'
+import useNotify from 'src/composables/useNotify'
 
 export const useTTSstore = defineStore('tts', () => {
+  const { notifyError } = useNotify()
+  const $q = useQuasar()
   const rate = ref(200)
   const voice = ref(null)
   const voices = ref(null)
@@ -9,29 +13,27 @@ export const useTTSstore = defineStore('tts', () => {
   const selectedLanguage = ref('')
 
   async function updateTtsInfo(command) {
+    $q.loading.show()
     const r = await API.onPromise({ command })
     voice.value = r.voice
     voices.value = r.voices
     rate.value = r.rate
+    $q.loading.hide()
   }
 
-  function getVoices() {
-    let r = []
-    if (selectedLanguage.value) {
-      for (const voice of voices.value) {
-        if (voice.languages.includes(selectedLanguage.value)) {
-          r.push(voice)
-        }
-      }
-      // voices array not included current voice, select voices frist voice
-      if (!r.includes(voice.value)) {
-        voice.value = r[0].id
-      }
-
-      return r
-    } else {
-      return voices.value
+  async function makeFile() {
+    if (!text.value) {
+      notifyError('Please enter your message ')
+      return false
     }
+    const r = await API.onPromise({
+      command: 'ttsMakeFile',
+      voice: voice.value,
+      rate: rate.value,
+      message: text.value
+    })
+    console.log(r)
+    return r
   }
 
   return {
@@ -40,7 +42,7 @@ export const useTTSstore = defineStore('tts', () => {
     voice,
     text,
     selectedLanguage,
-    getVoices,
-    updateTtsInfo
+    updateTtsInfo,
+    makeFile
   }
 })

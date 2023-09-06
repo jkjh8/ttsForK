@@ -21,7 +21,7 @@ async function getUid() {
 
 async function makeUid() {
   try {
-    if (socket.connected) {
+    if (socket && socket.connected) {
       socket.disconnect()
     }
     const current = uuidv4()
@@ -40,7 +40,7 @@ async function makeUid() {
 }
 
 async function updateUid(uid) {
-  if (socket.connected) {
+  if (socket && socket.connected) {
     socket.disconnect()
   }
   const r = await db.update(

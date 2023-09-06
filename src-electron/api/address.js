@@ -10,6 +10,11 @@ async function getAddress() {
     if (r && r.value) {
       address = r.value
     }
+    await db.update(
+      { key: 'serverAddress' },
+      { $set: { value: address } },
+      { upsert: true }
+    )
     return address
   } catch (error) {
     logger.error(`get address error: ${error}`)

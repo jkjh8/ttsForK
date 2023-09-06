@@ -13,10 +13,9 @@ async function selectFolder() {
 // lifecycle hooks
 onMounted(async () => {
   const r = await API.onPromise({
-    command: 'getDataFromDb',
-    value: 'folder'
+    command: 'getFolder'
   })
-  current.value = r.value
+  current.value = r
 })
 </script>
 

@@ -1,9 +1,9 @@
 <script setup>
-import TTSWindow from 'src/components/TtsWindow'
+import TTSWin from 'src/components/tts/TtsWin'
 </script>
 
 <template>
   <q-page class="flex flex-center">
-    <TTSWindow />
+    <TTSWin />
   </q-page>
 </template>

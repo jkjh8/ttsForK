@@ -6,11 +6,11 @@ import pyttsx3
 def make_file(command):
     try:
         engine = pyttsx3.init()
-        text = command[1]
-        filepath = command[2]
-        filename = command[3]
-        rate = command[4]
-        voice = command[5]
+        text = command[2]
+        filepath = command[3]
+        filename = command[4]
+        rate = command[5]
+        voice = command[6]
 
         # make file path name
         mp3filename = filepath + '/' + filename + '.mp3'
@@ -21,6 +21,7 @@ def make_file(command):
 
         # create audio file
         engine.save_to_file(text, mp3filename)
+        engine.runAndWait()
         print(json.dumps({"error": None, "file": mp3filename,
               "type": "audio", "rate": rate}))
 
@@ -53,7 +54,6 @@ def get_info():
 if __name__ == "__main__":
     command = sys.argv
     if command[1] == "make_file":
-        command.pop()
         make_file(command)
     elif command[1] == "get_info":
         get_info()

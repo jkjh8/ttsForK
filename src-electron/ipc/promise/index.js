@@ -1,9 +1,11 @@
 import { ipcMain } from 'electron'
-import db from '../../db'
-import { updateAddress } from '/src-electron/api/address'
+import { v4 as uuidv4 } from 'uuid'
+import db from '/src-electron/db'
+import { getAddress, updateAddress } from '/src-electron/api/address'
 import { getUid, makeUid, updateUid } from '/src-electron/api/uid'
-import { updateMediaFolder } from '/src-electron/api/folder'
+import { getMediaFolder, updateMediaFolder } from '/src-electron/api/folder'
 import { ttsInfo, ttsGet } from '/src-electron/api/tts'
+import { mediaFolder } from '/src-electron/api/folder'
 
 ipcMain.handle('onPromise', async (e, args) => {
   let rt = null
@@ -11,6 +13,9 @@ ipcMain.handle('onPromise', async (e, args) => {
   switch (args.command) {
     case 'getDataFromDb':
       rt = await db.findOne({ key: args.value })
+      break
+    case 'getAddress':
+      rt = await getAddress()
       break
     case 'updateServerAddress':
       await updateAddress(args.value)
@@ -29,12 +34,32 @@ ipcMain.handle('onPromise', async (e, args) => {
     case 'selectFolder':
       rt = await updateMediaFolder()
       break
+    case 'getFolder':
+      rt = await getMediaFolder()
+      break
     case 'ttsGetInfo':
       if (ttsInfo) {
         rt = ttsInfo
       } else {
         rt = await ttsGet(['get_info'])
       }
+      break
+    case 'ttsMakeFile':
+      let filename
+      if (!args.filename) {
+        filename = uuidv4()
+      } else {
+        filename = args.filename
+      }
+      rt = await ttsGet([
+        'make_file',
+        args.message,
+        mediaFolder,
+        filename,
+        args.rate,
+        args.voice
+      ])
+      console.log(rt)
       break
     case 'refreshTtsInfo':
       rt = await ttsGet(['get_info'])
