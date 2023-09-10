@@ -45,28 +45,15 @@ ipcMain.handle('onPromise', async (e, args) => {
       if (ttsInfo) {
         rt = ttsInfo
       } else {
-        rt = await ttsGet(['get_info'])
+        rt = await ttsGet({ comm: 'get_info' })
       }
       break
     case 'ttsMakeFile':
-      let filename
-      if (!args.filename) {
-        filename = uuidv4()
-      } else {
-        filename = args.filename
-      }
-      rt = await ttsGet([
-        'make_file',
-        args.message,
-        mediaFolder,
-        filename,
-        args.rate,
-        args.voice
-      ])
+      rt = await ttsGet({ ...args, comm: 'make_file' })
       console.log(rt)
       break
     case 'refreshTtsInfo':
-      rt = await ttsGet(['get_info'])
+      rt = await ttsGet({ comm: 'get_info' })
       break
     default:
       console.log('not defined command ' + args.command)

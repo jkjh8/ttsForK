@@ -6,24 +6,16 @@ import pyttsx3
 def make_file(command):
     try:
         engine = pyttsx3.init()
-        text = command[2]
-        filepath = command[3]
-        filename = command[4]
-        rate = command[5]
-        voice = command[6]
-
-        # make file path name
-        mp3filename = filepath + '/' + filename + '.mp3'
 
         # set engine properties
-        engine.setProperty('rate', int(rate))
-        engine.setProperty('voice', voice)
+        engine.setProperty('rate', int(command["rate"]))
+        engine.setProperty('voice', command["voice"])
 
         # create audio file
-        engine.save_to_file(text, mp3filename)
+        engine.save_to_file(command["message"], command["filename"])
         engine.runAndWait()
-        print(json.dumps({"error": None, "file": mp3filename,
-              "type": "audio", "rate": rate}))
+        print(json.dumps({"error": None, "file": command["filename"],
+              "type": "audio/wav", "rate": command["rate"], "voice": command["voice"]}))
 
         # end process
         sys.exit()
@@ -52,10 +44,11 @@ def get_info():
 
 
 if __name__ == "__main__":
-    command = sys.argv
-    if command[1] == "make_file":
-        make_file(command)
-    elif command[1] == "get_info":
+    args = sys.argv[1]
+    kwargs = json.loads(args)
+    if kwargs["comm"] == "make_file":
+        make_file(kwargs)
+    elif kwargs["comm"] == "get_info":
         get_info()
     else:
         print(json.dumps({"error": "unknown command"}))

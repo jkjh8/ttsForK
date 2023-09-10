@@ -7,11 +7,10 @@ const options = {
   pythonPath: workerData.pythonPath,
   pythonOptions: ['-u'],
   scriptPath: __dirname,
-  args: workerData.args
+  args: [JSON.stringify(workerData.args)]
 }
 PythonShell.run('tts.py', options)
   .then((result) => {
-    console.log(result)
     parentPort.postMessage(result[0])
     parentPort.close()
   })

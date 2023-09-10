@@ -20,6 +20,8 @@ async function openPreview() {
       componentProps: {
         src: `local://${src.file}`
       }
+    }).onOk(() => {
+      API.onRequest({ command: 'removeFile', file: src.file })
     })
   }
 }
@@ -47,7 +49,6 @@ onMounted(async () => {
       <TTSParams />
     </q-card-section>
     <q-card-actions align="right">
-      <q-btn round flat icon="save" color="primary" />
       <q-btn round flat icon="volume_up" color="primary" @click="openPreview" />
     </q-card-actions>
   </q-card>
