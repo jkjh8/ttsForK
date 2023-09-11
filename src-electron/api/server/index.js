@@ -1,5 +1,7 @@
 import { BrowserWindow as bw } from 'electron'
 import { io } from 'socket.io-client'
+
+import db from '/src-electron/db'
 import logger from '/src-electron/logger'
 import { getAddress } from '../address'
 import { getUid } from '../uid'
@@ -47,4 +49,18 @@ async function connectSocket() {
   }
 }
 
-export { socket, connectSocket, online }
+function apiServerOpen() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const r = await db.findOne({ key: 'apiserver' })
+      if (r && r.value) {
+        import('/src-electron/web')
+      }
+      resolve(r.value)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+export { socket, connectSocket, online, apiServerOpen }

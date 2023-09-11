@@ -4,6 +4,8 @@ import { ref, onMounted } from 'vue'
 import ServerAddress from '/src/components/setup/serverAddr'
 import ServerUuid from '/src/components/setup/serverUuid'
 import FolderPath from '/src/components/setup/folderPath'
+import ApiServer from '/src/components/setup/ttsApiServer'
+import ApiPort from '/src/components/setup/ttsApiPort'
 // variables
 const serverAddress = ref('http://localhost')
 
@@ -14,6 +16,8 @@ onMounted(() => {})
 <template>
   <div class="body-padding row justify-center">
     <div class="setup-card q-gutter-y-sm">
+      <ApiServer />
+      <ApiPort />
       <ServerAddress />
       <ServerUuid />
       <FolderPath />

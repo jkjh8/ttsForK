@@ -14,14 +14,14 @@ const $q = useQuasar()
 
 async function openPreview() {
   const src = await makeFile()
-  if (src && src.file) {
+  if (src && src.filename) {
     $q.dialog({
       component: PreviewDialog,
       componentProps: {
-        src: `local://${src.file}`
+        src: `local://${src.filename}`
       }
     }).onOk(() => {
-      API.onRequest({ command: 'removeFile', file: src.file })
+      API.onRequest({ command: 'removeFile', file: src.filename })
     })
   }
 }

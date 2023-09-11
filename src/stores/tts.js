@@ -26,13 +26,14 @@ export const useTTSstore = defineStore('tts', () => {
       notifyError('Please enter your message ')
       return false
     }
+    $q.loading.show()
     const r = await API.onPromise({
       command: 'ttsMakeFile',
       voice: voice.value,
       rate: rate.value,
       message: text.value
     })
-    console.log(r)
+    $q.loading.hide()
     return r
   }
 

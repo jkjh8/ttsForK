@@ -11,7 +11,11 @@ const options = {
 }
 PythonShell.run('tts.py', options)
   .then((result) => {
-    parentPort.postMessage(result[0])
+    if (result[0]) {
+      parentPort.postMessage(result[0])
+    } else {
+      parentPort.postMessage(workerData.args)
+    }
     parentPort.close()
   })
   .catch((err) => {

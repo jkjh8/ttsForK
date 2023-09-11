@@ -44,6 +44,7 @@ onMounted(() => {
         break
     }
   })
+  API.onRequest({ command: 'started' })
 })
 </script>
 

@@ -3,7 +3,8 @@ import path from 'path'
 import os from 'os'
 import db from './db'
 
-import { connectSocket } from './api/server/index'
+import { ttsGet } from './api/tts'
+import { apiServerOpen } from './api/server/index'
 import { getMediaFolder } from './api/folder'
 import { setLocalFileProtocol } from './api/files'
 // const vueDevToolPath = path.join(
@@ -58,13 +59,6 @@ async function createWindow() {
       mainWindow.webContents.closeDevTools()
     })
   }
-
-  setLocalFileProtocol()
-  // socket connect
-  connectSocket()
-  // get media folder
-  await getMediaFolder()
-
   mainWindow.on('closed', () => {
     mainWindow = null
   })
@@ -86,7 +80,14 @@ async function createWindow() {
   })
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(async () => {
+  await ttsGet({ comm: 'get_info' })
+  setLocalFileProtocol()
+  createWindow()
+  await getMediaFolder()
+  await apiServerOpen()
+  // await connectSocket()
+})
 
 app.on('window-all-closed', () => {
   if (platform !== 'darwin') {

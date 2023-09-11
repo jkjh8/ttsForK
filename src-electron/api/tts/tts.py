@@ -1,11 +1,16 @@
 import sys
 import json
-import pyttsx3
+import platform
 
 
 def make_file(command):
     try:
-        engine = pyttsx3.init()
+        if platform.platform() == 'Windows':
+            import pyttsx3
+            engine = pyttsx3.init()
+        else:
+            import pyttsx4
+            engine = pyttsx4.init()
 
         # set engine properties
         engine.setProperty('rate', int(command["rate"]))
@@ -14,7 +19,7 @@ def make_file(command):
         # create audio file
         engine.save_to_file(command["message"], command["filename"])
         engine.runAndWait()
-        print(json.dumps({"error": None, "file": command["filename"],
+        print(json.dumps({"error": None, "filename": command["filename"],
               "type": "audio/wav", "rate": command["rate"], "voice": command["voice"]}))
 
         # end process
@@ -26,7 +31,12 @@ def make_file(command):
 
 def get_info():
     try:
-        engine = pyttsx3.init()
+        if platform.platform() == 'Windows':
+            import pyttsx3
+            engine = pyttsx3.init()
+        else:
+            import pyttsx4
+            engine = pyttsx4.init()
 
         # get engine properties
         voices = engine.getProperty('voices')
