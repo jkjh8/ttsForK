@@ -12,12 +12,18 @@ export const useTTSstore = defineStore('tts', () => {
   const text = ref('')
   const selectedLanguage = ref('')
 
-  async function updateTtsInfo(command) {
+  async function updateTtsInfo() {
     $q.loading.show()
-    const r = await API.onPromise({ command })
-    voice.value = r.voice
-    voices.value = r.voices
-    rate.value = r.rate
+    const r = await API.onPromise({ command: 'ttsGetInfo' })
+    if (r && r.voice) {
+      voice.value = r.voice
+    }
+    if (r && r.voices) {
+      voices.value = r.voices
+    }
+    if (r && r.rate) {
+      rate.value = r.rate
+    }
     $q.loading.hide()
   }
 

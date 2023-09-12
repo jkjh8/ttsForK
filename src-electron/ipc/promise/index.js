@@ -42,11 +42,8 @@ ipcMain.handle('onPromise', async (e, args) => {
       rt = await getMediaFolder()
       break
     case 'ttsGetInfo':
-      if (ttsInfo) {
-        rt = ttsInfo
-      } else {
-        rt = await ttsGet({ comm: 'get_info' })
-      }
+      rt = await ttsGet({ comm: 'get_info' })
+      console.log(rt)
       break
     case 'ttsMakeFile':
       rt = await ttsGet({ ...args, comm: 'make_file' })

@@ -31,7 +31,7 @@ def make_file(command):
 
 def get_info():
     try:
-        if platform.platform() == 'Windows':
+        if platform.system() == 'Windows':
             import pyttsx3
             engine = pyttsx3.init()
         else:

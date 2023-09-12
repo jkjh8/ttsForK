@@ -56,7 +56,7 @@ function apiServerOpen() {
       if (r && r.value) {
         import('/src-electron/web')
       }
-      resolve(r.value)
+      resolve(r)
     } catch (error) {
       reject(error)
     }

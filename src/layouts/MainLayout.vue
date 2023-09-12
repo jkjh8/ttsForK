@@ -17,7 +17,7 @@ const { voices, voice, rate } = storeToRefs(useTTSstore())
 // Variables
 // Functions
 
-onMounted(() => {
+onMounted(async () => {
   window.addEventListener('resize', () => {
     //
     API.windowSizePosition({
@@ -45,6 +45,7 @@ onMounted(() => {
     }
   })
   API.onRequest({ command: 'started' })
+  await useTTSstore().updateTtsInfo({ comm: 'get_info' })
 })
 </script>
 

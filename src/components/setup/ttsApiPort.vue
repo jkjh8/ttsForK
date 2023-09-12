@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useQuasar } from 'quasar'
 import { storeToRefs } from 'pinia'
 // composables
 import useNotify from 'src/composables/useNotify'
@@ -12,6 +13,7 @@ const { notifyInfo, notifyError } = useNotify()
 const { required } = useRules()
 const { port, startAtOpen } = storeToRefs(useAPIServerStore())
 const { updateValues, getValues } = useAPIServerStore()
+const $q = useQuasar()
 // variables
 const current = ref(9999)
 
@@ -20,7 +22,7 @@ async function update() {
   await updateValues()
   $q.loading.hide()
   current.value = port.value
-  notifyInfo('updated')
+  notifyInfo('Updated')
 }
 
 onMounted(async () => {
