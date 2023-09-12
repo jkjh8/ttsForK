@@ -56,6 +56,7 @@ ipcMain.handle('onPromise', async (e, args) => {
       rt = await ttsGet({ comm: 'get_info' })
       break
     case 'apiserver':
+      console.log(args)
       rt = await db.update(
         { key: 'apiserver' },
         { $set: { value: args.value, port: args.port } },
@@ -65,7 +66,7 @@ ipcMain.handle('onPromise', async (e, args) => {
 
     // default
     default:
-      console.log('not defined command ' + args.command)
+      console.log('not defined command ' + JSON.stringify(args))
       break
   }
 
