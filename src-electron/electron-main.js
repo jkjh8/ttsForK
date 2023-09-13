@@ -85,7 +85,7 @@ app.whenReady().then(async () => {
   setLocalFileProtocol()
   createWindow()
   await getMediaFolder()
-  await apiServerOpen()
+  // await apiServerOpen()
   // await connectSocket()
 })
 

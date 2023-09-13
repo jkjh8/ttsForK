@@ -16,8 +16,8 @@ onMounted(() => {})
 <template>
   <div class="body-padding row justify-center">
     <div class="setup-card q-gutter-y-sm">
-      <ApiServer />
-      <ApiPort />
+      <!-- <ApiServer />
+      <ApiPort /> -->
       <ServerAddress />
       <ServerUuid />
       <FolderPath />

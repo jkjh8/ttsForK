@@ -4,9 +4,9 @@ import logger from '/src-electron/logger'
 
 function setLocalFileProtocol() {
   logger.info('Local file protocol registered')
-  protocol.registerFileProtocol('file', (req, cb) => {
+  protocol.registerFileProtocol('local', (req, cb) => {
     console.log('call file path', req.url)
-    const pathname = decodeURIComponent(req.url.replace('file://', ''))
+    const pathname = decodeURIComponent(req.url.replace('local://', ''))
     console.log(fs.existsSync(pathname))
     try {
       cb(pathname)

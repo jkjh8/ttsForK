@@ -12,7 +12,7 @@ const emit = defineEmits([...useDialogPluginComponent.emits])
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogOK">
     <div>{{ src }}</div>
-    <audio controls autoplay>
+    <audio controls autoplay @ended="onDialogOK">
       <source :src="src" type="audio/wav" />
     </audio>
   </q-dialog>

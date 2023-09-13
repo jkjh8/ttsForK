@@ -35,6 +35,10 @@ async function connectSocket() {
       })
     })
 
+    // TODO: add socket command
+
+    socket.on('tts', () => {})
+
     socket.on('disconnect', () => {
       online.status = false
       bw.fromId(1).webContents.send('onResponse', {

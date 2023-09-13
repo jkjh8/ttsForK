@@ -5,7 +5,7 @@ import platform
 
 def make_file(command):
     try:
-        if platform.platform() == 'Windows':
+        if platform.system() == 'Windows':
             import pyttsx3
             engine = pyttsx3.init()
         else:
